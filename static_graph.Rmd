@@ -1,0 +1,126 @@
+---
+title: "static_graph"
+author: "Lestary Barany"
+date: "2023-04-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+# Set the file path
+file_path <- "openwatchgender.csv"
+
+# Read the file using read.csv() function
+data <- read.csv(file_path, header = TRUE)
+
+# Preview the first few rows of the data
+head(data)
+
+```
+
+```{r}
+# Load the required packages
+library(tidyr)
+library(dplyr)
+
+# Filter the data for the indicator names 'Employment to Population Ratio (% of population), female' and 'Employment to Population Ratio (% of population), male'
+employment_data <- subset(data, indicator_name %in% c("Employment to Population Ratio (% of population), female", "Employment to Population Ratio (% of population), male"))
+
+# Convert the data to a long format
+employment_data_long <- gather(employment_data, year, employment, X2000:X2016, na.rm = TRUE)
+
+# Add a 'year' column by extracting the year from the 'year' column
+employment_data_long$year <- as.integer(substr(employment_data_long$year, 2, 5))
+
+# Convert the 'employment' column to numeric
+employment_data_long$employment <- as.numeric(employment_data_long$employment)
+
+# Remove any missing values
+employment_data_long <- na.omit(employment_data_long)
+```
+
+```{r}
+library(ggplot2)
+library(ggthemes)
+
+# set the file name and type for the plot image
+#png("employment_comparison_US_2000-2016.png")
+
+# Filter the data for the United States
+employment_data_us <- filter(employment_data_long, country_name == "United States")
+
+# Create the plot
+ggplot(employment_data_us, aes(x = year, y = employment, color = indicator_name)) + 
+  geom_line(size = 1) +
+  scale_color_manual(values = c("#F06292", "#008FD5"), name = "Gender", labels = c("Female", "Male")) +
+  labs(title = "Employment in the United States",
+       x = "Year",
+       y = "Employment (% of population)") +
+  theme_economist() +
+   theme(plot.title = element_text(size = 16, hjust = 0.5),
+        axis.title = element_text(size = 11),
+        legend.title = element_text(size = 11),
+        legend.text = element_text(size = 11),
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+```
+
+```{r}
+earning <- read.csv("income-by-gender.csv")
+```
+
+
+```{r}
+# Rename Measure.Values column to income
+names(earning)[names(earning) == "Measure.Values"] <- "income"
+
+# Rename Measures.Names column to Gender
+names(earning)[names(earning) == "Measure.Names"] <- "Gender"
+```
+
+
+```{r}
+earning <- earning %>% 
+  filter(Gender %in% c("Total Men", "Total Women")) %>% 
+  mutate(Income = as.numeric(gsub("[^0-9]", "", Income)))
+
+ggplot(data = earning, aes(x = Year, y = Income, color = Gender)) +
+  geom_line(size = 1) +
+  scale_color_manual(values = c("#008FD5", "#F06292"), name = "Gender", labels = c("Male", "Female")) +
+  labs(title = "Income in the United States",
+       x = "Year",
+       y = "Income") +
+  theme_economist() +
+  theme(plot.title = element_text(size = 16, hjust = 0.5),
+        axis.title = element_text(size = 11),
+        legend.title = element_text(size = 11),
+        legend.text = element_text(size = 11),
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+```
+```{r}
+occupations <- read.csv("top-10-women-occupations.csv")
+
+# Sort the data frame by rank
+occupations <- occupations[order(-occupations$Rank),]
+
+# Remove non-numeric characters from the Worker column
+occupations$Worker <- as.numeric(gsub("[^0-9]+", "", occupations$Worker))
+
+# Create the vertical bar chart
+ggplot(occupations, aes(x = reorder(Occupation, -Worker), y = Worker/1000)) +
+  geom_col(fill = "#F06292") +
+  labs(title = "Top 10 Women Occupations", x = "Occupations", y = "Number of Workers (in 1000)") +
+  theme_economist() +
+  coord_flip() +
+   theme(plot.title = element_text(size = 14, hjust = 0.5),
+        axis.title = element_text(size = 11),
+        legend.title = element_text(size = 11),
+        legend.text = element_text(size = 11),
+        axis.title.x = element_text(margin = margin(t = 1, r = 10, b = 1, l = 0)),
+        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
+```
+

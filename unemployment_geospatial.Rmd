@@ -1,0 +1,211 @@
+---
+title: "Geospatial Visualization of Unemployment between Men and Women in the United States"
+output:
+  html_document: default
+  pdf_document: default
+date: "2023-04-05"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# INTRODUCTION
+
+## Data
+The gender-based unemployment data was obtained from the US Bureau of Labour Statistics in the following link https://www.bls.gov/lau/ex14tables.htm 
+We are solely focusing on unemployment data from 2022 for each US state.
+
+
+```{r}
+setwd("C:/Users/ASUS/Desktop/dataviz final data")
+
+# Load required packages
+library(readxl)
+library(dplyr)
+library(leaflet)
+library(tidyr)
+
+# Read XLSX file using read_excel function from readxl package
+data <- read_excel("C:/Users/ASUS/Desktop/dataviz final data/geospatial data new/ptable14afull2022.xlsx", sheet = "State_Gender")
+
+# Write data to CSV file using write.csv function
+write.csv(data, file = "state_unemployment.csv", row.names = FALSE)
+
+# Load dataset
+data <- read.csv("C:/Users/ASUS/Desktop/dataviz final data/geospatial data new/state_unemployment.csv")
+
+df_select <- select(data, State, Population.Group, Unemployment.rate)
+
+# Pivot the data to have male and female unemployment rates as separate columns
+unemployment_rate <- df_select %>% pivot_wider(names_from = Population.Group, values_from = Unemployment.rate)
+
+```
+
+
+Based on the dataset called unemployment_rate (which contains State, Total, Men, Women), create a leaflet map of the United States showing unemployment rates for each state.
+
+```{r}
+# Load required libraries
+library(leaflet)
+library(sf)
+library(dplyr)
+
+# Read the geojson files
+us_outline <- st_read("C:/Users/ASUS/Desktop/dataviz final data/geospatial data new/gz_2010_us_outline_500k.json")
+us_states <- st_read("C:/Users/ASUS/Desktop/dataviz final data/geospatial data new/gz_2010_us_040_00_500k.json")
+
+# Merge unemployment_rate with us_states
+us_states_merged <- left_join(us_states, unemployment_rate, by = c("NAME" = "State"))
+
+# Create a color palette for unemployment rates
+total_unemployment_palette <- colorQuantile(palette = "YlOrRd", domain = us_states_merged$Total, n = 5)
+unemployment_breaks <- seq(0.0, 0.10, by = 0.02)
+
+# Define the bounding box corners
+southwest <- c(19, -180) # Latitude, longitude for the southwest corner
+northeast <- c(73, -63)  # Latitude, longitude for the northeast corner
+
+# Create a leaflet map
+map <- leaflet(us_states_merged) %>%
+  setView(-98.5795, 39.8283, zoom = 4) %>%
+  addProviderTiles(providers$Stamen.TonerLite) %>%
+  addPolygons(
+    fillColor = ~total_unemployment_palette(Total),
+    fillOpacity = 0.8,
+    color = "#000000",
+    weight = 1,
+    popup = ~paste(NAME, "<br>Total Unemployment:", Total, "%",
+                   "<br>Male: ", Men, "%",
+                   "<br>Female: ", Women, "%"),
+  )
+```
+
+
+## Analysis of Total Unemployment by State
+
+This interactive map depicts the unemployment rates of each US state, with separate color coding for total unemployment and unemployment by gender. Darker shades indicate higher unemployment rates, while lighter shades correspond to lower unemployment rates. By analyzing the map, it becomes apparent that many states in the West Coast, including California, Oregon, Washington State, and Nevada, have higher unemployment rates compared to the Midwest. Additionally, some states in the Northeast, such as New York, Connecticut, and Pennsylvania, also display higher unemployment rates. The map effectively highlights geographic patterns of unemployment across the US and provides insights into disparities among different regions and demographic groups.
+
+
+## Create gender layers
+
+```{r}
+# Load required libraries
+library(leaflet)
+library(sf)
+library(dplyr)
+
+# MALE LAYER
+
+# Create a color palette for male unemployment rates
+male_unemployment_palette <- colorQuantile(palette = "Blues", domain = us_states_merged$Men, n = 5)
+
+# Create a male unemployment layer
+male_layer <- map %>%
+  addTiles(options = providerTileOptions(minZoom = 3, maxZoom = 10)) %>%
+  addPolygons(
+    data = us_states_merged,
+    fillColor = ~male_unemployment_palette(Men),
+    fillOpacity = 0.8,
+    color = "#000000",
+    weight = 1,
+    popup = ~paste(NAME, "<br>Male Unemployment:", Men, "%"),
+  )
+
+# FEMALE LAYER
+
+# Create a color palette for female unemployment rates
+female_unemployment_palette <- colorQuantile(palette = "PuRd", domain = us_states_merged$Women, n = 5)
+
+# Create a female unemployment layer
+female_layer <- map %>%
+  addTiles(options = providerTileOptions(minZoom = 3, maxZoom = 10)) %>%
+  addPolygons(
+    data = us_states_merged,
+    fillColor = ~female_unemployment_palette(Women),
+    fillOpacity = 0.8,
+    color = "#000000",
+    weight = 1,
+    popup = ~paste(NAME, "<br>Female Unemployment:", Women, "%"),
+  )
+
+```
+
+
+# Combine all layers into one layered map
+The provided code generates an interactive web map using the leaflet package in R. The map displays the unemployment rates for each state in the United States using polygons to represent the states. In this case, the map displays the unemployment rates for each state in the United States. The unemployment rates are represented using polygons to outline each state, and the color of each polygon is used to represent the corresponding unemployment rate. 
+
+Furthermore, the layer control allows users to toggle between different layers on the map, in this case allowing them to switch between viewing the total unemployment rate, the male unemployment rate, and the female unemployment rate. This provides a way for users to explore the data in different ways and gain insights into the patterns of unemployment across the United States.
+
+```{r}
+# Load required libraries
+library(leaflet)
+library(sf)
+library(dplyr)
+
+# Read the geojson files
+us_outline <- st_read("C:/Users/ASUS/Desktop/dataviz final data/geospatial data new/gz_2010_us_outline_500k.json")
+us_states <- st_read("C:/Users/ASUS/Desktop/dataviz final data/geospatial data new/gz_2010_us_040_00_500k.json")
+
+# Merge unemployment_rate with us_states
+us_states_merged <- left_join(us_states, unemployment_rate, by = c("NAME" = "State"))
+
+# Define the bounding box corners
+southwest <- c(19, -180) # Latitude, longitude for the southwest corner
+northeast <- c(73, -63)  # Latitude, longitude for the northeast corner
+
+# Create a color palette for unemployment rates
+total_unemployment_palette <- colorQuantile(palette = "YlOrRd", domain = us_states_merged$Total, n = 5)
+male_unemployment_palette <- colorQuantile(palette = "Blues", domain = us_states_merged$Men, n = 5)
+female_unemployment_palette <- colorQuantile(palette = "PuRd", domain = us_states_merged$Women, n = 5)
+
+# Create a basic leaflet map
+map <- leaflet() %>%
+  setView(-98.5795, 39.8283, zoom = 4) %>%
+  addProviderTiles(providers$Stamen.TonerLite) # Base groups = background layer
+
+# Add all layers to the map
+map %>%
+  addPolygons(
+    data = us_states_merged,
+    group = "Total Unemployment",
+    fillColor = ~total_unemployment_palette(Total),
+    fillOpacity = 0.8,
+    color = "#000000",
+    weight = 1,
+    popup = ~paste(NAME, "<br>Total Unemployment:", Total, "%",
+                   "<br>Male: ", Men, "%",
+                   "<br>Female: ", Women, "%")
+  ) %>%
+  addPolygons(
+    data = us_states_merged,
+    group = "Male Unemployment",
+    fillColor = ~male_unemployment_palette(Men),
+    fillOpacity = 0.8,
+    color = "#000000",
+    weight = 1,
+    popup = ~paste(NAME, "<br>Male Unemployment:", Men, "%")
+  ) %>%
+  addPolygons(
+    data = us_states_merged,
+    group = "Female Unemployment",
+    fillColor = ~female_unemployment_palette(Women),
+    fillOpacity = 0.8,
+    color = "#000000",
+    weight = 1,
+    popup = ~paste(NAME, "<br>Female Unemployment:", Women, "%")
+  ) %>%
+  # Add layer controls to switch between layers
+  addLayersControl(
+    overlayGroups = c("Total Unemployment", "Male Unemployment", "Female Unemployment"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+```
+
+
+## Analysis of Combined Map
+Based on the map, we can visually interpret that for both genders, there is relatively higher unemployment in the West Coast and some states in the Northeast, compared to the Midwest. For instance, for male unemployment, there is high unemployment in states like Nevada, Washington and California. Interestingly, similar patterns can be seen for female unemployment. Perhaps there aren't pronounced gender differences in unemployment in many states in the US in 2022.
+
+
+
