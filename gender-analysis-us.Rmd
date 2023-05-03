@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Gender equality is an ongoing issue in the United States, particularly when it comes to employment and income. Despite progress in recent years, there is still a significant gap between men and women in terms of pay and job opportunities. Understanding the factors that contribute to this inequality is crucial for creating positive change. This project brings together data from various sources to help us better understand the geospatial condition of gender inequality, how it has evolved over time, and case studies in two industries.
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE,  include=FALSE, message = FALSE}
 # Load the required packages
 library(tidyr)
 library(dplyr)
@@ -37,7 +37,7 @@ library(igraph)
 The gender-based unemployment data was obtained from the US Bureau of Labour Statistics in the following link https://www.bls.gov/lau/ex14tables.htm 
 We are solely focusing on unemployment data from 2022 for each US state.
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 # INTRODUCTION
 # setwd("C:/Users/ASUS/Desktop/dataviz final data")
 
@@ -63,7 +63,7 @@ unemployment_rate <- df_select %>% pivot_wider(names_from = Population.Group, va
 
 ## Based on the dataset called unemployment_rate (which contains State, Total, Men, Women), create a leaflet map of the United States showing unemployment rates for each state.
 
-```{r}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 # Load required libraries
 library(leaflet)
 library(sf)
@@ -102,7 +102,7 @@ map <- leaflet(us_states_merged) %>%
 ```
 This interactive map depicts the unemployment rates of each US state, with separate color coding for total unemployment and unemployment by gender. Darker shades indicate higher unemployment rates, while lighter shades correspond to lower unemployment rates. By analyzing the map, it becomes apparent that many states in the West Coast, including California, Oregon, Washington State, and Nevada, have higher unemployment rates compared to the Midwest. Additionally, some states in the Northeast, such as New York, Connecticut, and Pennsylvania, also display higher unemployment rates. The map effectively highlights geographic patterns of unemployment across the US and provides insights into disparities among different regions and demographic groups.
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 ## Create gender layers
 
 # Load required libraries
@@ -128,9 +128,8 @@ male_layer <- map %>%
   )
 ```
 
-# FEMALE LAYER
 
-```{r}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 # Create a color palette for female unemployment rates
 female_unemployment_palette <- colorQuantile(palette = "PuRd", domain = us_states_merged$Women, n = 5)
 
@@ -148,7 +147,7 @@ female_layer <- map %>%
 
 ```
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 # Load required libraries
 library(leaflet)
 library(sf)
@@ -172,7 +171,7 @@ female_unemployment_palette <- colorQuantile(palette = "PuRd", domain = us_state
   
 ```
 
-```{r}
+```{r, echo=FALSE}
 # Create a basic leaflet map
 map <- leaflet() %>%
   setView(-98.5795, 39.8283, zoom = 4) %>%
@@ -222,7 +221,7 @@ Based on the map, we can visually interpret that for both genders, there is rela
 
 In the United States, female employment rates remain consistently lower than male employment rates, with a gap of around 20%. Furthermore, female workers receive significantly lower pay than their male counterparts, with the gap in income also hovering around 20%. While this gap has nominally decreased over time, it remains a persistent issue, with a variety of factors contributing to this disparity. 
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 # Set the file path
 file_path <- "openwatchgender.csv"
 
@@ -230,7 +229,7 @@ file_path <- "openwatchgender.csv"
 data <- read.csv(file_path, header = TRUE)
 ```
 
-```{r, echo = FALSE, message = FALSE}
+```{r,echo = FALSE, include=FALSE, message = FALSE}
 # Filter the data for the indicator names 'Employment to Population Ratio (% of population), female' and 'Employment to Population Ratio (% of population), male'
 employment_data <- subset(data, indicator_name %in% c("Employment to Population Ratio (% of population), female", "Employment to Population Ratio (% of population), male"))
 
@@ -250,7 +249,7 @@ employment_data_long <- na.omit(employment_data_long)
 employment_data_us <- filter(employment_data_long, country_name == "United States")
 ```
 
-```{r}
+```{r, echo=FALSE}
 # Create the plot
 ggplot(employment_data_us, aes(x = year, y = employment, color = indicator_name)) + 
   geom_line(linewidth = 1) +
@@ -266,7 +265,7 @@ ggplot(employment_data_us, aes(x = year, y = employment, color = indicator_name)
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)))
 ```
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 earning <- read.csv("income-by-gender.csv")
 
 # Rename Measure.Values column to income
@@ -280,7 +279,7 @@ earning <- earning %>%
   mutate(Income = as.numeric(gsub("[^0-9]", "", Income)))
 ```
 
-```{r}
+```{r, echo=FALSE}
 ggplot(data = earning, aes(x = Year, y = Income, color = Gender)) +
   geom_line(linewidth = 1) +
   scale_color_manual(values = c("#008FD5", "#F06292"), name = "Gender", labels = c("Male", "Female")) +
@@ -299,7 +298,7 @@ ggplot(data = earning, aes(x = Year, y = Income, color = Gender)) +
 
 While it is true that the top occupations for women in the United States are primarily in the services industry, it is important to note that a significant portion of these jobs are low-skilled or involve repetitive tasks. While these jobs are necessary for our economy and provide important services to communities, they often do not offer the same level of job security or opportunities for career growth as higher-skilled occupations. It is important to work towards creating a more equal job market where women have access to a wider range of employment opportunities, including those that offer more skill development and higher pay. 
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 occupations <- read.csv("top-10-women-occupations.csv")
 
 # Sort the data frame by rank
@@ -309,7 +308,7 @@ occupations <- occupations[order(-occupations$Rank),]
 occupations$Worker <- as.numeric(gsub("[^0-9]+", "", occupations$Worker))
 ```
 
-```{r}
+```{r, echo=FALSE}
 # Create the vertical bar chart
 ggplot(occupations, aes(x = reorder(Occupation, -Worker), y = Worker/1000)) +
   geom_col(fill = "#F06292") +
@@ -326,7 +325,7 @@ ggplot(occupations, aes(x = reorder(Occupation, -Worker), y = Worker/1000)) +
 
 # Case Study 1: Lazega Law Firm in United States
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 trends <- read.csv("Lazega-Atts.csv")
 advice <- read.csv("Lazega-Advice-Net-B_20-_20Sheet_201+_2_.csv")
 
@@ -350,7 +349,7 @@ advice_df <- data.frame(
 Advice_interactions <- inner_join(trends, advice_df, by = 'ID')
 ```
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 fig <- plot_ly(x = Advice_interactions$practice, y = Advice_interactions$Interactions, color = factor(Advice_interactions$gender) , type = "box")
 fig <- layout(fig, xaxis = list(
   ticktext = c("Litigation", "Corporate"),
@@ -361,7 +360,7 @@ fig
 ```
 A box plot of the number of interactions each of node in the network. This is split on two levels -- First, it is split by practice (1 = Litigation and 2 = Corporate). This is then further split by men and women (1=man, 2 =woman).
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 d=read.csv(file ='Lazega-Advice-Net-B_20-_20Sheet_201+_2_.csv')
 m=as.matrix(d)
 dmg=graph.adjacency(m)
@@ -370,14 +369,12 @@ dmg=graph.adjacency(m)
 
 gn = edge.betweenness.community (dmg, directed = TRUE)
 
-head(gn)
-
 ###adjust plot margins
 par(mar = c(1, 1, 1, 1))
 
 ```
 
-```{r}
+```{r, echo=FALSE}
 plot(gn, dmg)
 ```
 
@@ -387,7 +384,7 @@ memb = data.frame(gn$membership)
 summary(memb)
 ```
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 ### Random walk partitioning ---
 
 walk = walktrap.community(dmg)
@@ -398,11 +395,11 @@ head(walk)
 par(mar = c(1, 1, 1, 1))
 ```
 
-```{r}
+```{r, echo=FALSE}
 plot(walk, dmg)
 ```
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include = FALSE, message = FALSE}
 walk.memb = data.frame(walk$membership)
 
 ## making a dataframe of partitioning ---
@@ -419,7 +416,7 @@ attributesd=read.csv(file ='Lazega-Atts.csv')
 
 ```
 
-```{r}
+```{r, echo=FALSE}
 # Second part has two plots created: a) colouring by membership and b) colouring by gender
 plot(walk, dmg, col=factor(walk$membership))
 ```
@@ -431,7 +428,7 @@ We conducted text analysis of plot descriptions of movies to compare the use of 
 The datasets were obtained from a study conducted by FiveThirtyEight on Hollywood's gender bias. The datasets can be downloaded from the following Github repository https://github.com/rfordatascience/tidytuesday/tree/master/data/2021/2021-03-09  
 
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 # Import Data
 raw_bechdel <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-09/raw_bechdel.csv')
 movies <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-03-09/movies.csv')
@@ -445,12 +442,10 @@ data_filtered <- data %>%
   filter(rating != 0)
 ```
  
-## Word Cloud
 We chose 500 movies that pass the Bechdel Test and compare with 500 movies that failed the Bechdel test. We will analyse the text from "plot". We use the cleaning functions to remove unnecessary words (stop words), syntax, punctuation, numbers, white space, etc. We also creates a document-term-matrix, and provided word clouds of the most frequent words among the movies that pass and fail the Bechdel test.
 
-### In movies with better female representation (passed the Bechdel test) have more common words in the plot like woman, school, life, girl, family (which are family-oriented and domestic).
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 library(dplyr)
 library(wordcloud2)
 library(tidytext)
@@ -493,8 +488,7 @@ wordcloud(words = clean_text_pass$word, freq = clean_text_pass$n, scale = c(3, 0
           random.order = FALSE, colors = pink_palette(length(clean_text_pass$word)))
 ```
 
-### While movies with less female representation (failed the Bechdel test) have plots with common words like life, world, story, team etc. which implies more adventure-driven movies
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 # Clean the text using the functions introduced in lecture
 clean_text_fail <- fail %>% 
   select(plot) %>% 
@@ -512,7 +506,7 @@ movie_dtm <- DocumentTermMatrix(fail)
 # Define a custom color palette of different shades of blue
 blue_palette <- colorRampPalette(c("#E6F3FF", "#BFD6F8", "#99B9F2", "#739DF0"))
 ```
-```{r}
+```{r, echo=FALSE}
 # Create a word cloud with the custom blue color palette
 wordcloud(words = clean_text_fail$word, freq = clean_text_fail$n, scale = c(3, 0.5),
           random.order = FALSE, colors = blue_palette(length(clean_text_fail$word)))
@@ -522,9 +516,8 @@ Based on the word clouds, we found that the most common words in the plot of mov
 
 In the next stage of our analysis, we presented bar graphs displaying the frequency of the top 20 most commonly used words, along with their respective counts, to provide further details about the distribution of these words. Our analysis includes three visual representations: bar graphs for both passed and failed Bechdel Test categories, as well as a pyramid plot that compares the most common words used in movies that passed and failed the Bechdel Test. By presenting these visualizations side by side, we can easily compare and contrast the frequency and type of words used in the plot descriptions of movies that passed and failed the test.
 
-Bar graph for movie plots that passed the Bechdel Test
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 library(ggplot2)
 library(ggthemes)
 
@@ -540,7 +533,7 @@ clean_text <- pass %>%
   slice_head(n = 20)
 
 ```
-```{r}
+```{r, echo=FALSE}
 # Create a bar graph of the most common words
 ggplot(clean_text, aes(x = reorder(word, -n), y = n)) +
   geom_col(fill = "palevioletred") +
@@ -556,9 +549,7 @@ ggplot(clean_text, aes(x = reorder(word, -n), y = n)) +
 ```
 
 
-Bar graph for movie plots that failed the Bechdel Test
-
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 library(ggplot2)
 library(ggthemes)
 
@@ -573,7 +564,7 @@ clean_text <- fail %>%
   count(word, sort = TRUE) %>% 
   slice_head(n = 20)
 ```
-```{r}
+```{r, echo=FALSE}
 # Create a bar graph of the most common words
 ggplot(clean_text, aes(x = reorder(word, -n), y = n)) +
   geom_col(fill = "steelblue") +
@@ -586,12 +577,9 @@ ggplot(clean_text, aes(x = reorder(word, -n), y = n)) +
         plot.margin = unit(c(1, 1, 1, 1), "cm"))
 ```
 
-
-### Pyramid Plot
-
 We provide a pyramid plot to show how the words between passing and failed Bechdel test movies differ in frequency. A selection of 20 top words are chosen.
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, include=FALSE, message = FALSE}
 library(dplyr)
 library(tidytext)
 library(stringr)
@@ -643,7 +631,7 @@ clean_text_fail <- fail %>%
   slice_head(n = 20)
 
 ```
-```{r}
+```{r, echo = FALSE, message = FALSE}
 # Create the pyramid plot
 par(mar=c(5,5,2,2))
 pyramid.plot(clean_text_pass$n, clean_text_fail$n,
