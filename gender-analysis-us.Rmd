@@ -404,6 +404,7 @@ attributesd=read.csv(file ='Lazega-Atts.csv')
 ```{r, echo=FALSE}
 # Second part has two plots created: a) colouring by membership and b) colouring by gender
 plot(walk, dmg, col=factor(walk$membership))
+plot(walk, dmg, col=factor(attributesd$gender))
 ```
 The above social network graph has grouped the Lazega nodes using the Random Walk algorithm method to classify groups. Thereafter, the nodes are coloured by gender. As we can see from the graph, the number of women are materially fewer than the men.
 
@@ -468,10 +469,15 @@ movie_dtm <- DocumentTermMatrix(pass)
 # Define a custom color palette of different shades of pink
 pink_palette <- colorRampPalette(c("#FFC0CB", "#FF69B4", "#FF1493", "#C71585"))
 
+```
+
+```{r, echo=FALSE}
 # Create a word cloud with the custom pink color palette
 wordcloud(words = clean_text_pass$word, freq = clean_text_pass$n, scale = c(3, 0.5),
           random.order = FALSE, colors = pink_palette(length(clean_text_pass$word)))
+
 ```
+
 
 ```{r, echo = FALSE, include=FALSE, message = FALSE}
 # Clean the text using the functions introduced in lecture
