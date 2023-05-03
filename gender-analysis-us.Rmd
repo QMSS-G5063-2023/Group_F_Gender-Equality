@@ -368,14 +368,6 @@ dmg=graph.adjacency(m)
 ### Girvan-Newman partitioning ---
 
 gn = edge.betweenness.community (dmg, directed = TRUE)
-
-###adjust plot margins
-par(mar = c(1, 1, 1, 1))
-
-```
-
-```{r, echo=FALSE}
-plot(gn, dmg)
 ```
 
 ```{r, echo = FALSE, message = FALSE}
@@ -390,13 +382,6 @@ summary(memb)
 walk = walktrap.community(dmg)
 
 head(walk)
-
-#adjust plot margins
-par(mar = c(1, 1, 1, 1))
-```
-
-```{r, echo=FALSE}
-plot(walk, dmg)
 ```
 
 ```{r, echo = FALSE, include = FALSE, message = FALSE}
@@ -644,14 +629,3 @@ pyramid.plot(clean_text_pass$n, clean_text_fail$n,
              raxlab = seq(from = 0, to = 50, by = 10),
              mtext(" ", side = 1, line = 5, col = "black", cex = 1.2))
 ```
-
-
-# Conclusion
-
-Based on our analysis of movie plots, we compared the frequency of words used in movies that passed and failed the Bechdel Test as a measure of female representation. The Bechdel Test is a standard to evaluate female representation in movies that requires a movie to have at least two named female characters who talk to each other about something other than a man. The Bechdel Test has become a widely recognized standard for evaluating the representation of female characters in movies, providing a simple yet effective metric to evaluate whether women are depicted as fully formed characters who have conversations about topics other than men. However, it is important to note that a movie that fails the Bechdel Test should not be automatically labeled as anti-feminist or problematic. Instead, the test serves as a tool for critical analysis and a starting point for further examination of gender representation in media. By using the Bechdel Test as a measure of female representation in movies, we can better understand the patterns and biases that may exist in media and work towards creating more equitable and diverse representation of women in film.
-
-We found that movies with better female representation (passed Bechdel Test) had more common words in the plot like "woman", "school", "life", "girl", "family", which implies themes of domesticity. In contrast, movies with less female representation (failed Bechdel Test) had plots with common words like "life", "world", "story", and "team", which implies more adventure-driven plots. These findings suggest that there are differences in the types of movies that pass or fail the Bechdel Test, which may be related to the representation of female characters in the movies. The themes that we observed in the movies that passed or failed the Bechdel Test reflect certain gender norms that have been perpetuated in media. The use of words like "woman", "school", "life", "girl", and "family" in the plots of movies that passed the Bechdel Test suggests that these movies may be more oriented towards domestic themes that are traditionally associated with women. On the other hand, movies that failed the Bechdel Test tended to have more adventure-driven plots with words like "life", "world", "story", and "team", which aligns with traditional masculine gender norms.
-
-This type of analysis is important because it helps to shed light on potential differences in how women are represented in media, and how this representation might differ based on whether a movie passes or fails the Bechdel Test. By understanding these differences, we can start to identify potential biases and patterns that may exist in media and work towards creating more equitable representation of women in movies. Additionally, this analysis can contribute to a broader conversation around gender and media representation, and help us to better understand the ways in which media shapes our perceptions and expectations of gender roles.
-
-
