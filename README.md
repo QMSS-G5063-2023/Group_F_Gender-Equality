@@ -7,6 +7,7 @@ Lestary J. Barany (ljb2185@columbia.edu)
 Manickamalar Kayalvizhi Pillay (mmp2227@columbia.edu)
 
 Project Website https://github.com/QMSS-G5063-2023/Group_F_Gender-Equality/blob/main/gender-analysis-us.html
+Video Presentation https://columbiauniversity.zoom.us/rec/share/Mrk1fOtzcH1uNW4p-5x8saj9kxcV7cb5Wx_YYshoH5_eAtl7eMxMj-6BpM-HIHJU.3rzVndrrWwPxznWc?startTime=1683078686000
 
 ## Project Description
 Gender equality is an ongoing issue in the United States, particularly when it comes to employment and income. Despite progress in recent years, there is still a significant gap between men and women in terms of pay and job opportunities. Understanding the factors that contribute to this inequality is crucial for creating positive change.Our project aims to investigate gender-related discrepancies in the United States. The initiative will also seek to increase awareness of gender-related issues and identify areas where additional research and policy action are required. We generated attractive visualizations to identify patterns, trends, and insights regarding gender differences in the US.  We created four types of visualizations: static images with ggplot, maps using geospatial data, visualizations of text analysis, and network visualizations. This project brings together data from various sources to help us better understand the geospatial condition of gender inequality, how it has evolved over time, and case studies in two industries.
