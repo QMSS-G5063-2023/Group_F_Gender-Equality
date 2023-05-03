@@ -7,6 +7,7 @@ Lestary J. Barany (ljb2185@columbia.edu)
 Manickamalar Kayalvizhi Pillay (mmp2227@columbia.edu)
 
 Project Website https://github.com/QMSS-G5063-2023/Group_F_Gender-Equality/blob/main/gender-analysis-us.html
+
 Video Presentation https://columbiauniversity.zoom.us/rec/share/Mrk1fOtzcH1uNW4p-5x8saj9kxcV7cb5Wx_YYshoH5_eAtl7eMxMj-6BpM-HIHJU.3rzVndrrWwPxznWc?startTime=1683078686000
 
 ## Project Description
